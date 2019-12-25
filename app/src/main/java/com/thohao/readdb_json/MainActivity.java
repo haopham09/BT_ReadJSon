@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
@@ -20,18 +21,23 @@ import java.net.URLConnection;
 public class MainActivity extends AppCompatActivity {
     String mURL = "https://khoapham.vn/KhoaPhamTraining/json/tien/demo1.json";
     ImageView mImg;
+    TextView txtMonhoc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mImg = findViewById(R.id.imgview);
+        txtMonhoc = findViewById(R.id.txt_monhoc);
+
         new ReadJSon().execute(mURL);
     }
+
     class ReadJSon extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... strings) {
+
             return ReadDataFromURL(strings[0]);
         }
 
@@ -49,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 //String monhoc = jsonObject.optString(("monhoc"));
-                /*dùng optString sẽ bỏ qua data kg có key hoặc key =null*/
+                /* optString sẽ bỏ qua data kg có key hoặc key =null*/
                 String monhoc = jsonObject.optString(("monhoc"));
-                String noihoc = jsonObject.optString(("noihoc"));
-                String website = jsonObject.optString(("website"));
+                //String noihoc = jsonObject.optString(("noihoc"));
+                //String website = jsonObject.optString(("website"));
                 String logo = jsonObject.optString(("logo"));
                 Glide
                         .with(MainActivity.this)
@@ -60,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
                         .placeholder(R.mipmap.ic_launcher)
                         .error(R.drawable.ic_launcher_background)
                         .into(mImg);
+                txtMonhoc.setText(monhoc);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -75,12 +82,12 @@ public class MainActivity extends AppCompatActivity {
             //create a urlconnection object
             URLConnection urlConnection = url.openConnection();
             //wrap the urlconnection in a bufferedreader
-            BufferedReader bufferedReader;
-            bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             String line;
             //read from the urlconnection via the bufferedreader
             while ((line = bufferedReader.readLine()) != null) {
-                content.append(line + "\n");
+                //content.append(line + "\n");
+                content.append(line).append("\n");
             }
             bufferedReader.close();
         } catch (Exception e) {
